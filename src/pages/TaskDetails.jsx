@@ -37,7 +37,8 @@ export default function TaskDetails() {
     if (!window.confirm('Delete this task? This action cannot be undone.')) return
     try {
       await api.deleteTask(id)
-      navigate('/tasks')
+      navigate('/tasks') 
+      
     } catch {
       setError('Could not delete this task.')
     }
