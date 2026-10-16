@@ -7,7 +7,7 @@ import StatusBadge from '../components/StatusBadge'
 import PriorityBadge from '../components/PriorityBadge'
 import TaskForm from '../components/TaskForm'
 
-export default function TaskDetails() {
+export default function TaskDetails({ refreshTaskCount }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [task, setTask] = useState(null)
@@ -37,6 +37,7 @@ export default function TaskDetails() {
     if (!window.confirm('Delete this task? This action cannot be undone.')) return
     try {
       await api.deleteTask(id)
+      await refreshTaskCount()
       navigate('/tasks') 
 
     } catch {

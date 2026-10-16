@@ -12,10 +12,21 @@ import { api } from './api'
 export default function App() {
   const [projects, setProjects] = useState([])
   const [apiError, setApiError] = useState(false)
+  const [taskCount, setTaskCount] = useState(0)
 
-  useEffect(() => {
-    api.getProjects().then(setProjects).catch(() => setApiError(true))
-  }, [])
+  async function refreshTaskCount() {
+  try {
+    const tasks = await api.getTasks()
+    setTaskCount(tasks.length)
+  } catch {
+    setApiError(true)
+  }
+}
+
+useEffect(() => {
+  api.getProjects().then(setProjects).catch(() => setApiError(true))
+  refreshTaskCount()
+}, [])
 
   const navItems = [
     { to: '/', label: 'Overview', icon: LayoutDashboard, end: true },
@@ -40,7 +51,7 @@ export default function App() {
           {navItems.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               <Icon size={18} /><span>{label}</span>
-              {label === 'Tasks' && <span className="nav-count">7</span>}
+              {label === 'Tasks' && <span className="nav-count">{taskCount}</span>}
             </NavLink>
           ))}
         </nav>
@@ -78,8 +89,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/tasks" element={<Tasks />} />
-            <Route path="/tasks/new" element={<NewTask />} />
-            <Route path="/tasks/:id" element={<TaskDetails />} />
+            <Route path="/tasks/new" element={<NewTask refreshTaskCount={refreshTaskCount} />} />
+            <Route path="/tasks/:id" element={<TaskDetails refreshTaskCount={refreshTaskCount} />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/projects/:id" element={<ProjectDetails />} />
             <Route path="*" element={<Navigate to="/" replace />} />

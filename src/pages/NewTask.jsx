@@ -4,7 +4,7 @@ import SectionHeading from '../components/SectionHeading'
 import TaskForm from '../components/TaskForm'
 import { api } from '../api'
 
-export default function NewTask() {
+export default function NewTask({ refreshTaskCount }) {
   const [projects, setProjects] = useState([])
   const [error, setError] = useState('')
   const navigate = useNavigate()
@@ -14,6 +14,7 @@ export default function NewTask() {
   async function createTask(form) {
     try {
       await api.createTask({ ...form, projectId: Number(form.projectId) })
+      await refreshTaskCount()
       navigate('/tasks')
     } catch {
       setError('The task could not be created. Please try again.')
