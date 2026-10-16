@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Search, SlidersHorizontal, Plus, ListTodo } from 'lucide-react'
+import { Search, SlidersHorizontal, ListTodo } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
 import SectionHeading from '../components/SectionHeading'
@@ -30,6 +30,12 @@ export default function Tasks() {
     return matchesSearch && matchesStatus && matchesPriority
   }), [tasks, search, status, priority])
 
+  function resetFilters() {
+    setSearch('')
+    setStatus('All status')
+    setPriority('All priorities')
+  }
+
   return (
     <div className="page-content">
       <SectionHeading eyebrow="YOUR WORKSPACE" title="All tasks" description="Keep track of the details that move your projects forward." action="Create task" to="/tasks/new" />
@@ -50,6 +56,13 @@ export default function Tasks() {
               <option value="High">High</option>
             </select>
           </div>
+          <button
+              type="button"
+              className="button button-ghost"
+              onClick={resetFilters}
+          >
+            Reset filters
+          </button>
         </div>
         {error && <div className="form-error">{error}</div>}
         {loading ? <div className="loading-state">Loading tasks…</div> : <div className="table-wrap"><table className="tasks-table"><thead><tr><th>Task name</th><th>Assignee</th><th>Due date</th><th>Priority</th><th>Status</th><th><span className="sr-only">Open</span></th></tr></thead><tbody>
