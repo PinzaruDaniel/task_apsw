@@ -25,7 +25,7 @@ export default function TaskDetails() {
 
   async function updateTask(form) {
     try {
-      const updated = await api.updateTask(id, { ...form, projectId: form.projectId })
+      const updated = await api.updateTask(id, { ...form, projectId: Number(form.projectId) })
       setTask(updated)
       setEditing(false)
     } catch {
@@ -38,7 +38,7 @@ export default function TaskDetails() {
     try {
       await api.deleteTask(id)
       navigate('/tasks') 
-      
+
     } catch {
       setError('Could not delete this task.')
     }
