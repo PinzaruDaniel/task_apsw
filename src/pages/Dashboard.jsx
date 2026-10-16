@@ -10,15 +10,19 @@ export default function Dashboard() {
     const [tasks, setTasks] = useState([])
     const [projects, setProjects] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         Promise.all([api.getTasks(), api.getProjects()])
             .then(([taskData, projectData]) => {
-                setTasks(taskData);
+                setTasks(taskData)
                 setProjects(projectData)
             })
+            .catch(() => {
+                setError('Could not load dashboard data. Please try again.')
+            })
             .finally(() => setLoading(false))
-    }, [])
+    }, []) 
 
     const completed = tasks.filter((task) => task.status === 'Done').length
     const inProgress = tasks.filter((task) => task.status === 'In progress').length
@@ -26,6 +30,7 @@ export default function Dashboard() {
 
     return (
         <div className="page-content">
+            {error && <div className="form-error">{error}</div>}
             <SectionHeading eyebrow="THURSDAY, OCTOBER 15, 2026" title="Good morning, Dana ✨"
                             description="Here's what's happening across your workspace today." action="New task"
                             to="/tasks/new"/>

@@ -8,18 +8,23 @@ export default function Projects() {
     const [projects, setProjects] = useState([])
     const [tasks, setTasks] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         Promise.all([api.getProjects(), api.getTasks()])
             .then(([projectData, taskData]) => {
-                setProjects(projectData);
+                setProjects(projectData)
                 setTasks(taskData)
+            })
+            .catch(() => {
+                setError('Could not load projects. Please try again.')
             })
             .finally(() => setLoading(false))
     }, [])
 
     return <div className="page-content"><SectionHeading eyebrow="YOUR WORKSPACE" title="Projects"
                                                          description="A home for every idea, milestone, and team effort."/>
+    {error && <div className="form-error">{error}</div>}
         <div className="project-intro">
             <div className="project-intro-icon"><FolderKanban size={21}/></div>
             <div><strong>Your team's work,
